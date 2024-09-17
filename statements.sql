@@ -132,11 +132,46 @@ JOIN categorias ON statements.usuarios.id_categoria = categorias.id_categoria;
 /* Relación tipo N:M */
 -- PASO 1
 -- Tu código aquí
+/*Crear tabla intermedia `usuarios_categorias`*/
+SELECT * FROM statements.usuarios_categorias;
 
+CREATE TABLE statements.usuarios_categorias (
+    id_usuario_categoria INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT,
+    id_categoria INT,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
+);
 
 -- PASO 2
 -- Tu código aquí
+/*asocia usuaios a categria*/
+SELECT * FROM statements.usuarios_categorias;
 
+INSERT INTO usuarios_categorias (id_usuario, id_categoria) VALUES
+(1, 1), (1, 2), (1, 3),
+(2, 4), (2, 5),
+(3, 6), (3, 7),
+(4, 8), (4, 9), (4, 10);
 
 -- PASO 3
 -- Tu código aquí
+/*JOIN de las tablas roles, categorias y con la tabla intermedia*/
+SELECT * FROM statements.usuarios_categorias;
+
+SELECT 
+    usuarios.id_usuario, 
+    usuarios.nombre, 
+    usuarios.apellido, 
+    usuarios.email, 
+    usuarios.edad,
+    roles.nombre_rol, 
+    categorias.nombre_categoria
+FROM 
+    statements.usuarios
+JOIN 
+    roles ON usuarios.id_rol = roles.id_rol
+JOIN 
+    usuarios_categorias ON usuarios.id_usuario = usuarios_categorias.id_usuario
+JOIN 
+    categorias ON usuarios_categorias.id_categoria = categorias.id_categoria;
