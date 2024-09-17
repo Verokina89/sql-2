@@ -4,7 +4,7 @@ Las notaciones 1:1, 1:N y N:M son términos utilizados en el diseño de bases de
 
 * Relación 1:1 (One-to-One):
 
-En una relación 1:1, un registro en una tabla está asociado con un solo registro en otra tabla, y viceversa.
+En una relación 1:1, un registro en una tabla que está asociado con un solo registro en otra tabla, y viceversa.
 Es similar a decir que cada entidad en la primera tabla tiene una única entidad correspondiente en la segunda tabla, y viceversa.
 Un ejemplo podría ser la relación entre una tabla de empleados y una tabla de información confidencial, donde cada empleado tiene una única entrada en la tabla de información confidencial.
 
