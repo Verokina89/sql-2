@@ -61,23 +61,73 @@ UPDATE usuarios SET id_rol = 4 WHERE id_usuario IN (4, 8, 12, 16, 20);
 -- Tu código aquí
 /*S usa JOIN para combinar los datos de las tablas usuarios y roles */
 
+SELECT 
+    usuarios.id_usuario, 
+    usuarios.nombre, 
+    usuarios.apellido, 
+    usuarios.email, 
+    usuarios.edad, 
+    roles.nombre_rol
+    
+FROM statements.usuarios
+
+JOIN roles ON statements.usuarios.id_rol = roles.id_rol;
 
 /* Relación tipo 1:N */
 -- PASO 1
 -- Tu código aquí
+SELECT * FROM statements.categorias;
 
+CREATE TABLE categorias (
+    id_categoria INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_categoria VARCHAR(100) NOT NULL
+);
+
+INSERT INTO categorias (nombre_categoria) VALUES
+('Electronicos'),
+('Ropa y Accesorios'),
+('Libros'),
+('Hogar y Cocina'),
+('Deportes y aire libre'),
+('Salud y cuidado personal'),
+('Herramientas y mejoras para el hogar'),
+('Juguetes y juegos'),
+('Automotriz'),
+('Música y Películas');
 
 -- PASO 2
 -- Tu código aquí
+/*Se añade en la tabla `usuarios` la columna `id_categorias`*/
+SELECT * FROM statements.usuarios; --poder visulizar y comprobar cada paso
+SELECT * FROM statements.categorias; 
 
+ALTER TABLE statements.usuarios ADD COLUMN id_categoria INT;
 
 -- PASO 3
 -- Tu código aquí
-
+/*Asina a cada usuario la categoria*/
+UPDATE usuarios SET id_categoria = 1 WHERE id_usuario IN (1, 5, 9, 13, 17);
+UPDATE usuarios SET id_categoria = 2 WHERE id_usuario IN (2, 6, 10, 14, 18);
+UPDATE usuarios SET id_categoria = 3 WHERE id_usuario IN (3, 7, 11, 15, 19);
+UPDATE usuarios SET id_categoria = 4 WHERE id_usuario IN (4, 8, 12, 16, 20);
 
 -- PASO 4
 -- Tu código aquí
+/*combinar los datos de `roles y categorias`*/
+SELECT 
+	usuarios.id_usuario, 
+    usuarios.nombre, 
+    usuarios.apellido, 
+    usuarios.email, 
+    usuarios.edad, 
+    roles.nombre_rol, 
+    categorias.nombre_categoria
+    
+FROM statements.usuarios
 
+JOIN roles ON statements.usuarios.id_rol = roles.id_rol
+
+JOIN categorias ON statements.usuarios.id_categoria = categorias.id_categoria;
 
 /* Relación tipo N:M */
 -- PASO 1
