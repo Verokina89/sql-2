@@ -1,12 +1,12 @@
-/* Relación tipo 1:1 */
+/* Relación tipo 1:1 One-to-One */
 -- PASO 1
 --Tu código aquí
 CREATE TABLE usuarios (
-id_usuario INT AUTO_INCREMENT PRIMARY KEY, --Clave primaria que se incrementa automáticamente con cada nueva entrada o registro (fila).
+id_usuario INT AUTO_INCREMENT PRIMARY KEY, --Clave primaria que se incrementa automáticamente con cada nueva entrada o registro (fila)y el Primary key no prmite valores nulos, .
 nombre VARCHAR(50) NOT NULL, --Campos de texto con restriccion de no ser nulo y con un maximo de caracteres.
 apellido VARCHAR(50) NOT NULL,
 email VARCHAR(100) NOT NULL,
-edad INT NOT NULL --campo numérico
+edad INT NOT NULL --campo numerico
 );
 
 INSERT INTO usuarios (nombre, apellido, email, edad) VALUES
@@ -35,11 +35,11 @@ INSERT INTO usuarios (nombre, apellido, email, edad) VALUES
 -- PASO 2
 --Tu código aquí
 CREATE TABLE roles (
-id_rol INT AUTO_INCREMENT PRIMARY KEY,
-nombre_rol VARCHAR(50) NOT NULL 
+id_rol INT AUTO_INCREMENT PRIMARY KEY,  --clave primaria sirve para relacionar diferentes tablas entre clavs foraneas
+nombre_rol VARCHAR(50) NOT NULL --campo d texto q no puede ser nulo
 );
 
-INSERT INTO roles (nombre_rol) VALUES
+INSERT INTO roles (nombre_rol) VALUES  --inserta datos en la tabla roles.
 ('Bronce'),
 ('Plata'),
 ('Oro'),
@@ -48,10 +48,11 @@ INSERT INTO roles (nombre_rol) VALUES
 
 -- PASO 3
 -- Tu código aquí
-/*Añadir columna id_rol a usuarios y establecer clave foránea */
-ALTER TABLE usuarios ADD COLUMN id_rol INT;
-ALTER TABLE usuarios ADD FOREIGN KEY (id_rol) REFERENCES roles(id_rol);
+/*Añadir(alterar) columna id_rol a usuarios y establecer clave foránea */
+ALTER TABLE usuarios ADD COLUMN id_rol INT;  --agrega (crea dentro tambien) la columna id_rol a la tabla usuarios. Si agregamos un `NOT NULL` da error ya que no puede estar vacia
+ALTER TABLE usuarios ADD FOREIGN KEY (id_rol) REFERENCES roles(id_rol);  --establece la CLAVE FORANEA, es decir que la hace intelignte. mejor crearla antes por esta razon de evitar registros herfanos
 
+--actualiza la columna id_rol en la tabla usuarios
 UPDATE usuarios SET id_rol = 1 WHERE id_usuario IN (1, 5, 9, 13, 17);
 UPDATE usuarios SET id_rol = 2 WHERE id_usuario IN (2, 6, 10, 14, 18);
 UPDATE usuarios SET id_rol = 3 WHERE id_usuario IN (3, 7, 11, 15, 19);
@@ -59,8 +60,7 @@ UPDATE usuarios SET id_rol = 4 WHERE id_usuario IN (4, 8, 12, 16, 20);
 
 -- PASO 4
 -- Tu código aquí
-/*S usa JOIN para combinar los datos de las tablas usuarios y roles */
-
+/*Se usa JOIN para combinar los datos de las tablas usuarios y roles */
 SELECT 
     usuarios.id_usuario, 
     usuarios.nombre, 
@@ -68,12 +68,11 @@ SELECT
     usuarios.email, 
     usuarios.edad, 
     roles.nombre_rol
-    
 FROM statements.usuarios
-
 JOIN roles ON statements.usuarios.id_rol = roles.id_rol;
 
-/* Relación tipo 1:N */
+
+-- Relación tipo 1:N (One-to-Many)
 -- PASO 1
 -- Tu código aquí
 SELECT * FROM statements.categorias;
@@ -83,7 +82,7 @@ CREATE TABLE categorias (
     nombre_categoria VARCHAR(100) NOT NULL
 );
 
-INSERT INTO categorias (nombre_categoria) VALUES
+INSERT INTO categorias (nombre_categoria) VALUES   --inserta datos en l tabla categorias
 ('Electronicos'),
 ('Ropa y Accesorios'),
 ('Libros'),
@@ -97,7 +96,7 @@ INSERT INTO categorias (nombre_categoria) VALUES
 
 -- PASO 2
 -- Tu código aquí
-/*Se añade en la tabla `usuarios` la columna `id_categorias`*/
+--Se añade en la tabla `usuarios` la columna `id_categorias`
 SELECT * FROM statements.usuarios; --poder visulizar y comprobar cada paso
 SELECT * FROM statements.categorias; 
 
@@ -113,7 +112,9 @@ UPDATE usuarios SET id_categoria = 4 WHERE id_usuario IN (4, 8, 12, 16, 20);
 
 -- PASO 4
 -- Tu código aquí
-/*combinar los datos de `roles y categorias`*/
+--combinar los datos de `roles y categorias`
+SELECT * FROM statements.categorias; 
+
 SELECT 
 	usuarios.id_usuario, 
     usuarios.nombre, 
@@ -122,16 +123,15 @@ SELECT
     usuarios.edad, 
     roles.nombre_rol, 
     categorias.nombre_categoria
-    
 FROM statements.usuarios
-
 JOIN roles ON statements.usuarios.id_rol = roles.id_rol
-
 JOIN categorias ON statements.usuarios.id_categoria = categorias.id_categoria;
 
-/* Relación tipo N:M */
+ALTER TABLE categorias ADD FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria);  --Se altera la clave ususarios, establece la CLAVE FORANEA, es decir que la hace intelignte. mejor crearla antes por esta razon de evitar registros herfanos
+
+/* Relación tipo N:M (Many-to-Many)*/
 -- PASO 1
--- Tu código aquí
+-- Tu código aquí 
 /*Crear tabla intermedia `usuarios_categorias`*/
 SELECT * FROM statements.usuarios_categorias;
 
@@ -139,6 +139,7 @@ CREATE TABLE statements.usuarios_categorias (
     id_usuario_categoria INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT,
     id_categoria INT,
+    --id_usuario_categoria PRIMARY KEY,  --se estable en la que tiene que facilitar la identificacion. Esta estructura es recomndada (se quita de la de la linea 144)
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
     FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
 );
@@ -150,9 +151,9 @@ SELECT * FROM statements.usuarios_categorias;
 
 INSERT INTO usuarios_categorias (id_usuario, id_categoria) VALUES
 (1, 1), (1, 2), (1, 3),
-(2, 4), (2, 5),
-(3, 6), (3, 7),
-(4, 8), (4, 9), (4, 10);
+(2, 4), (2, 5),(3, 6), 
+(3, 7),(4, 8), (4, 9), 
+(4, 10);
 
 -- PASO 3
 -- Tu código aquí
@@ -166,12 +167,26 @@ SELECT
     usuarios.email, 
     usuarios.edad,
     roles.nombre_rol, 
-    categorias.nombre_categoria
-FROM 
-    statements.usuarios
-JOIN 
-    roles ON usuarios.id_rol = roles.id_rol
-JOIN 
-    usuarios_categorias ON usuarios.id_usuario = usuarios_categorias.id_usuario
-JOIN 
-    categorias ON usuarios_categorias.id_categoria = categorias.id_categoria;
+    categorias.nombre_categoria   
+FROM statements.usuarios
+JOIN roles ON usuarios.id_rol = roles.id_rol
+JOIN usuarios_categorias ON usuarios.id_usuario = usuarios_categorias.id_usuario
+JOIN categorias ON usuarios_categorias.id_categoria = categorias.id_categoria 
+ORDER BY id_usuario ASC;  --ordenar por id_usuarios
+
+
+/*
+SELECT 
+    usuarios.id_usuario, 
+    usuarios.nombre, 
+    usuarios.apellido, 
+    usuarios.email, 
+    usuarios.edad,
+    roles.nombre_rol, 
+    categorias.nombre_categoria   
+FROM statements.usuarios
+JOIN( role, usuarios_categorias, categorias)
+ON usuarios.id_rol = roles.id_rol
+AND usuarios.id_categoria = usuarios_categorias.id_usuario
+AND usuarios_categorias.id_categoria = categorias.id_categoria 
+*/
